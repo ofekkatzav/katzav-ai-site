@@ -40,11 +40,11 @@ function cn(...inputs) {
 // --- Webhook Configuration & Event Tracking ---
 
 const WEBHOOK_MAP = {
-  'default_lead': 'https://n8n.your-domain.com/webhook/new-lead',
-  'form_submit_consultation': 'https://n8n.your-domain.com/webhook/consultation-lead',
-  'diagnostic_lead_captured': 'https://n8n.your-domain.com/webhook/diagnostic-lead',
-  'whatsapp_button_click': 'https://n8n.your-domain.com/webhook/whatsapp-click-event',
-  'hero_cta_click': 'https://n8n.your-domain.com/webhook/hero-cta-click'
+  'default_lead': 'https://n8n.srv942917.hstgr.cloud/webhook/new-lead',
+  'form_submit_consultation': 'https://n8n.srv942917.hstgr.cloud/webhook/consultation-lead',
+  'diagnostic_lead_captured': 'https://n8n.srv942917.hstgr.cloud/webhook/diagnostic-lead',
+  'whatsapp_button_click': 'https://n8n.srv942917.hstgr.cloud/webhook/whatsapp-click',
+  'hero_cta_click': 'https://n8n.srv942917.hstgr.cloud/webhook/hero-cta'
 };
 
 /**
@@ -602,17 +602,7 @@ const DiagnosticWidget = () => {
     setResult(null);
 
     try {
-      // 1. Track the event using trackEvent
-      await trackEvent('diagnostic_lead_captured', { 
-        name: formData.name, 
-        email: formData.email, 
-        phone: formData.phone,
-        problem: formData.problem,
-        goal: formData.goal,
-        currentSystem: formData.currentSystem
-      });
-
-      // 2. Call Gemini for the characterization
+      // קריאה ל-n8n - כל המידע נשלח ונשמר שם (כולל הליד)
       const apiResult = await callGeminiAPI(formData);
       setResult(apiResult);
       setStep(prev => prev + 1); // Move to result step
