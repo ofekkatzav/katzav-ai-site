@@ -612,7 +612,7 @@ const DiagnosticWidget = () => {
       const apiResult = await callGeminiAPI(formData);
       setResult(apiResult);
       setStep(prev => prev + 1); // Move to result step
-      setSubmitted(true); // Mark as submitted
+      // Don't set submitted yet - let user see the results first!
       
     } catch (err) {
       console.error("Error in handleDiagnoseSubmit:", err);
