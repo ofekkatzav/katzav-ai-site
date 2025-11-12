@@ -6,7 +6,7 @@ import {
   Send
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import KatzavLogoImg from './katzav-logo.svg';
+import KatzavLogoImg from './katzav-logo.png';
 
 // --- Utility Functions ---
 
