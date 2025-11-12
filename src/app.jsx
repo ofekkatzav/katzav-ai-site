@@ -557,6 +557,7 @@ const DiagnosticWidget = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
   
   const totalSteps = 4; // 3 questions + 1 lead form
 
@@ -611,6 +612,7 @@ const DiagnosticWidget = () => {
       const apiResult = await callGeminiAPI(formData);
       setResult(apiResult);
       setStep(prev => prev + 1); // Move to result step
+      setSubmitted(true); // Mark as submitted
       
     } catch (err) {
       console.error("Error in handleDiagnoseSubmit:", err);
@@ -704,54 +706,96 @@ const DiagnosticWidget = () => {
       case 5: // Result Step
         return (
           <motion.div key={5} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h3 className="text-xl font-bold text-emerald-600 mb-3">האפיון הראשוני שלך מוכן!</h3>
-            {result ? (
-              <div className="space-y-4 text-right">
-                <h4 className="text-lg font-semibold text-gray-900">{result.title}</h4>
-                
-                {/* Value Proposition */}
-                <div className="bg-emerald-50 border-r-4 border-emerald-500 p-3 rounded">
-                  <h5 className="font-semibold text-emerald-800">הערך המרכזי</h5>
-                  <p className="text-sm text-emerald-700">{result.valueProposition}</p>
+            {submitted ? (
+              // Confirmation message after clicking CTA
+              <div className="text-center space-y-4">
+                <CheckCircle className="h-16 w-16 text-emerald-600 mx-auto" />
+                <h3 className="text-2xl font-bold text-gray-900">תודה רבה!</h3>
+                <p className="text-lg text-gray-600">
+                  קיבלנו את הפרטים שלך ואת האפיון הראשוני
+                </p>
+                <p className="text-base text-gray-500">
+                  נחזור אליך בהקדם לשיחה על הפתרון המתאים לעסק שלך
+                </p>
+                <div className="pt-4">
+                  <Button 
+                    onClick={() => {
+                      // Reset form
+                      setStep(1);
+                      setFormData({
+                        problem: '',
+                        goal: '',
+                        currentSystem: '',
+                        name: '',
+                        email: '',
+                        phone: ''
+                      });
+                      setResult(null);
+                      setSubmitted(false);
+                      setError(null);
+                    }}
+                    variant="outline"
+                    className="mt-4"
+                  >
+                    אפיון חדש
+                  </Button>
                 </div>
-
-                {/* Value Boxes (Time/Efficiency) */}
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-gray-100 p-2 rounded">
-                    <h6 className="text-xs font-medium text-gray-500">חיסכון בזמן</h6>
-                    <p className="text-sm font-semibold text-gray-800">{result.timeSaving}</p>
-                  </div>
-                   <div className="bg-gray-100 p-2 rounded">
-                    <h6 className="text-xs font-medium text-gray-500">שיפור ביעילות</h6>
-                    <p className="text-sm font-semibold text-gray-800">{result.efficiencyGain}</p>
-                  </div>
-                </div>
-
-                {/* Steps */}
-                <div>
-                  <h5 className="font-semibold mb-2">שלבי התהליך (כללי):</h5>
-                  <ol className="relative border-r border-gray-200 mr-2 space-y-3">
-                    {result.steps.map((step, index) => (
-                      <li key={index} className="mr-4">
-                        <span className="absolute -right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-emerald-200 ring-4 ring-white"></span>
-                        <h6 className="text-sm font-semibold">{step.name}</h6>
-                        <p className="text-xs text-gray-500">באמצעות: {step.tool}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-                
-                <p className="text-xs text-gray-500 pt-2">זמן פיתוח מוערך: {result.estimatedTime}</p>
-
-                {/* CTA */}
-                <Button asChild className="w-full mt-4" size="lg">
-                  <a href="#consultation">
-                    רוצים לדבר על זה? בואו נקבע שיחה
-                  </a>
-                </Button>
               </div>
             ) : (
-              <p>טוען תוצאות...</p>
+              // Show results
+              <>
+                <h3 className="text-xl font-bold text-emerald-600 mb-3">האפיון הראשוני שלך מוכן!</h3>
+                {result ? (
+                  <div className="space-y-4 text-right">
+                    <h4 className="text-lg font-semibold text-gray-900">{result.title}</h4>
+                    
+                    {/* Value Proposition */}
+                    <div className="bg-emerald-50 border-r-4 border-emerald-500 p-3 rounded">
+                      <h5 className="font-semibold text-emerald-800">הערך המרכזי</h5>
+                      <p className="text-sm text-emerald-700">{result.valueProposition}</p>
+                    </div>
+
+                    {/* Value Boxes (Time/Efficiency) */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-gray-100 p-2 rounded">
+                        <h6 className="text-xs font-medium text-gray-500">חיסכון בזמן</h6>
+                        <p className="text-sm font-semibold text-gray-800">{result.timeSaving}</p>
+                      </div>
+                       <div className="bg-gray-100 p-2 rounded">
+                        <h6 className="text-xs font-medium text-gray-500">שיפור ביעילות</h6>
+                        <p className="text-sm font-semibold text-gray-800">{result.efficiencyGain}</p>
+                      </div>
+                    </div>
+
+                    {/* Steps */}
+                    <div>
+                      <h5 className="font-semibold mb-2">שלבי התהליך (כללי):</h5>
+                      <ol className="relative border-r border-gray-200 mr-2 space-y-3">
+                        {result.steps.map((step, index) => (
+                          <li key={index} className="mr-4">
+                            <span className="absolute -right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-emerald-200 ring-4 ring-white"></span>
+                            <h6 className="text-sm font-semibold">{step.name}</h6>
+                            <p className="text-xs text-gray-500">באמצעות: {step.tool}</p>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                    
+                    <p className="text-xs text-gray-500 pt-2">זמן פיתוח מוערך: {result.estimatedTime}</p>
+
+                    {/* CTA */}
+                    <Button 
+                      onClick={() => setSubmitted(true)}
+                      className="w-full mt-4" 
+                      size="lg"
+                    >
+                      רוצים לדבר על זה? בואו נקבע שיחה
+                    </Button>
+                  </div>
+                ) : (
+                  <p>טוען תוצאות...</p>
+                )}
+              </>
             )}
           </motion.div>
         );
