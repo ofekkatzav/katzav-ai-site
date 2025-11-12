@@ -85,135 +85,41 @@ async function trackEvent(eventName, payload = {}) {
 // --- API Call Functions ---
 
 /**
- * Calls the Gemini API for the Diagnostic Widget.
+ * Calls the n8n webhook for the Diagnostic Widget.
+ * The AI processing now happens on the server via n8n.
  * @param {object} formData The collected data from the multi-step form
- * @returns {Promise<object>} The parsed JSON response from the API
+ * @returns {Promise<object>} The parsed JSON response from n8n
  */
 async function callGeminiAPI(formData) {
-  const apiKey = ""; // As per instructions, leave empty.
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
-  // Updated System Prompt: High-level, no specific tools, no prices.
-  const systemPrompt = `You are an expert business automation consultant. A user will provide a business problem, goal, and their current system.
-Your job is to return a concise, high-level automation suggestion in a specific JSON format.
-The user is Israeli, so ALL response strings MUST be in Hebrew.
-**DO NOT mention specific software names** (like 'n8n', 'Zapier', 'Make', 'Slack', etc.). Use generic terms like 'כלי אוטומציה', 'מערכת התראות', 'גיליון נתונים'.
-**DO NOT mention cost or price.** Focus *only* on business value.
-Keep descriptions short, punchy, and non-technical ('ברומו של עולם').
-Fill in 'valueProposition', 'timeSaving', and 'efficiencyGain' with compelling, general benefits.`;
-
-  const { problem, goal, currentSystem } = formData;
-  const userQuery = `הבעיה: "${problem}"\nהמטרה: "${goal}"\nהמערכת הקיימת: "${currentSystem}"\n\nאנא צור אפיון אוטומציה כללי וגבוה.`;
-
-  // Updated Schema: No 'integrations' or 'cost'. Focused on value.
-  const schema = {
-    type: "OBJECT",
-    properties: {
-      title: { 
-        type: "STRING", 
-        description: "שם קליט וכללי להצעת האוטומציה. (למשל: 'ייעול תהליך קליטת לידים')" 
-      },
-      steps: {
-        type: "ARRAY",
-        items: {
-          type: "OBJECT",
-          properties: {
-            name: { type: "STRING", description: "תיאור כללי של השלב. (למשל: 'קליטת פניה מטופס')" },
-            tool: { type: "STRING", description: "תיאור כללי של הכלי. (למשל: 'מערכת ניהול לקוחות')" }
-          },
-          required: ["name", "tool"]
-        }
-      },
-      estimatedTime: { 
-        type: "STRING", 
-        description: "זמן מוערך לפיתוח הפתרון (כללי). (למשל: 'ימים בודדים', 'כשבוע')" 
-      },
-      valueProposition: { 
-        type: "STRING", 
-        description: "הצעת הערך המרכזית (בעברית). (למשל: 'שחרור הצוות מעבודה ידנית ומתן מענה מהיר ללקוחות')" 
-      },
-      timeSaving: { 
-        type: "STRING", 
-        description: "תיאור חיסכון בזמן (כללי, בעברית). (למשל: 'חיסכון של שעות עבודה שבועיות')" 
-      },
-      efficiencyGain: { 
-        type: "STRING", 
-        description: "תיאור התייעלות (כללי, בעברית). (למשל: 'קיצור תהליך הפנייה מיומיים לדקות')" 
-      },
-    },
-    required: ["title", "steps", "estimatedTime", "valueProposition", "timeSaving", "efficiencyGain"]
-  };
-
-  const payload = {
-    contents: [{
-      parts: [{ text: userQuery }]
-    }],
-    systemInstruction: {
-      parts: [{ text: systemPrompt }]
-    },
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema: schema,
-      temperature: 0.8,
-    }
-  };
-
-  // Fetch with exponential backoff
-  let response;
-  const maxRetries = 3;
-  let delay = 1000;
-
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (response.ok) {
-        break; // Success
-      }
-
-      if (response.status === 429 || response.status >= 500) {
-        console.warn(`Gemini API retryable error: ${response.status}. Retrying in ${delay}ms...`);
-        await new Promise(res => setTimeout(res, delay));
-        delay *= 2;
-      } else {
-        throw new Error(`שגיאת API: ${response.statusText}`);
-      }
-
-    } catch (e) {
-      if (i === maxRetries - 1) {
-        console.error("Gemini API call failed after max retries", e);
-        throw new Error(`קריאת ה-API נכשלה לאחר מספר ניסיונות: ${e.message}`);
-      }
-      console.warn(`Gemini API call failed. Retrying in ${delay}ms...`, e.message);
-      await new Promise(res => setTimeout(res, delay));
-      delay *= 2;
-    }
-  }
-
-  if (!response || !response.ok) {
-    throw new Error("השרת לא עונה או שהקריאה נכשלה סופית. נסו שוב.");
-  }
-
-  // Parse the JSON response
-  try {
-    const result = await response.json();
-    const candidate = result.candidates?.[0];
-
-    if (!candidate || !candidate.content?.parts?.[0]?.text) {
-      console.error("Invalid response structure from Gemini:", result);
-      throw new Error("התקבלה תשובה לא צפויה מ-Gemini.");
-    }
-
-    const jsonText = candidate.content.parts[0].text;
-    return JSON.parse(jsonText); // This is the structured JSON object
+  // קריאה ל-n8n webhook במקום ישירות ל-Gemini
+  // כל הלוגיקה של AI רצה עכשיו בשרת דרך n8n
+  const n8nWebhookUrl = 'https://n8n.srv942917.hstgr.cloud/webhook/diagnostic-agent';
   
-  } catch (e) {
-    console.error("Failed to parse Gemini JSON response", e);
-    throw new Error("אירעה שגיאה בעיבוד התשובה שהתקבלה מ-AI.");
+  try {
+    const response = await fetch(n8nWebhookUrl, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`שגיאת שרת: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'אירעה שגיאה בעיבוד הבקשה');
+    }
+    
+    // החזרת התוצאה בפורמט שהאתר מצפה לו
+    return data.result;
+    
+  } catch (error) {
+    console.error("Error calling n8n webhook:", error);
+    throw new Error(`קריאת ה-AI נכשלה: ${error.message}`);
   }
 }
 

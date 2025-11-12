@@ -1,0 +1,263 @@
+{
+  "name": "Katzav AI - Diagnostic Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "diagnostic-agent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Webhook - קבלת נתונים",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "diagnostic-agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "problem",
+              "name": "problem",
+              "value": "={{ $json.body.problem }}",
+              "type": "string"
+            },
+            {
+              "id": "goal",
+              "name": "goal",
+              "value": "={{ $json.body.goal }}",
+              "type": "string"
+            },
+            {
+              "id": "currentSystem",
+              "name": "currentSystem",
+              "value": "={{ $json.body.currentSystem }}",
+              "type": "string"
+            },
+            {
+              "id": "name",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "phone",
+              "name": "phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "extract-data",
+      "name": "חילוץ נתונים",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "system_prompt",
+              "name": "systemPrompt",
+              "value": "You are an expert business automation consultant. A user will provide a business problem, goal, and their current system.\nYour job is to return a concise, high-level automation suggestion in a specific JSON format.\nThe user is Israeli, so ALL response strings MUST be in Hebrew.\n**DO NOT mention specific software names** (like 'n8n', 'Zapier', 'Make', 'Slack', etc.). Use generic terms like 'כלי אוטומציה', 'מערכת התראות', 'גיליון נתונים'.\n**DO NOT mention cost or price.** Focus *only* on business value.\nKeep descriptions short, punchy, and non-technical ('ברומו של עולם').\nFill in 'valueProposition', 'timeSaving', and 'efficiencyGain' with compelling, general benefits.",
+              "type": "string"
+            },
+            {
+              "id": "user_query",
+              "name": "userQuery",
+              "value": "הבעיה: \"{{ $json.problem }}\"\nהמטרה: \"{{ $json.goal }}\"\nהמערכת הקיימת: \"{{ $json.currentSystem }}\"\n\nאנא צור אפיון אוטומציה כללי וגבוה.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "build-prompt",
+      "name": "בניית Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "apiKey",
+        "modelId": {
+          "__rl": true,
+          "value": "gemini-2.5-flash-preview-09-2025",
+          "mode": "list",
+          "cachedResultName": "gemini-2.5-flash-preview-09-2025"
+        },
+        "prompt": {
+          "__rl": true,
+          "value": "={{ $json.userQuery }}",
+          "mode": "expression"
+        },
+        "options": {
+          "systemMessage": "={{ $json.systemPrompt }}",
+          "temperature": 0.8,
+          "responseFormat": "json_object"
+        }
+      },
+      "id": "gemini-api",
+      "name": "Gemini API - יצירת אפיון",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [910, 300],
+      "credentials": {
+        "googleGeminiApi": {
+          "id": "GEMINI_CREDENTIALS_ID",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const geminiResponse = $input.first().json.message.content;\n\ntry {\n  // Parse the JSON response from Gemini\n  const parsed = JSON.parse(geminiResponse);\n  \n  // Build the final response with lead info\n  const response = {\n    success: true,\n    lead: {\n      name: $('חילוץ נתונים').item.json.name,\n      email: $('חילוץ נתונים').item.json.email,\n      phone: $('חילוץ נתונים').item.json.phone,\n      problem: $('חילוץ נתונים').item.json.problem,\n      goal: $('חילוץ נתונים').item.json.goal,\n      currentSystem: $('חילוץ נתונים').item.json.currentSystem,\n      timestamp: new Date().toISOString()\n    },\n    result: {\n      title: parsed.title,\n      steps: parsed.steps,\n      estimatedTime: parsed.estimatedTime,\n      valueProposition: parsed.valueProposition,\n      timeSaving: parsed.timeSaving,\n      efficiencyGain: parsed.efficiencyGain\n    }\n  };\n  \n  return [{ json: response }];\n  \n} catch (error) {\n  return [{\n    json: {\n      success: false,\n      error: 'Failed to parse AI response',\n      message: error.message\n    }\n  }];\n}"
+      },
+      "id": "format-response",
+      "name": "עיצוב תשובה",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1130, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "response-node",
+      "name": "תשובה ללקוח",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1350, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "contact",
+        "email": "={{ $('חילוץ נתונים').item.json.email }}",
+        "additionalFields": {
+          "firstName": "={{ $('חילוץ נתונים').item.json.name.split(' ')[0] }}",
+          "lastName": "={{ $('חילוץ נתונים').item.json.name.split(' ').slice(1).join(' ') }}",
+          "phone": "={{ $('חילוץ נתונים').item.json.phone }}",
+          "customFields": {
+            "problem": "={{ $('חילוץ נתונים').item.json.problem }}",
+            "goal": "={{ $('חילוץ נתונים').item.json.goal }}",
+            "currentSystem": "={{ $('חילוץ נתונים').item.json.currentSystem }}"
+          }
+        }
+      },
+      "id": "save-lead",
+      "name": "שמירת ליד (אופציונלי)",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [1130, 480],
+      "disabled": true,
+      "notes": "ניתן לחבר ל-CRM כמו HubSpot, Pipedrive וכו'"
+    }
+  ],
+  "connections": {
+    "Webhook - קבלת נתונים": {
+      "main": [
+        [
+          {
+            "node": "חילוץ נתונים",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "חילוץ נתונים": {
+      "main": [
+        [
+          {
+            "node": "בניית Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "בניית Prompt": {
+      "main": [
+        [
+          {
+            "node": "Gemini API - יצירת אפיון",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini API - יצירת אפיון": {
+      "main": [
+        [
+          {
+            "node": "עיצוב תשובה",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "עיצוב תשובה": {
+      "main": [
+        [
+          {
+            "node": "תשובה ללקוח",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "שמירת ליד (אופציונלי)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "katzav-ai",
+      "name": "Katzav AI"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-11-12T09:00:00.000Z",
+  "versionId": "1"
+}
+
