@@ -6,17 +6,7 @@ import {
   Send
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Katzav AI Logo Component
-const KatzavLogo = ({ className = "h-8 w-8" }) => (
-  <svg className={className} viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-    <path d="M 15 60 Q 60 10, 105 60" stroke="currentColor" strokeWidth="2.5" fill="none" opacity="0.7"/>
-    <path d="M 105 60 Q 60 110, 15 60" stroke="currentColor" strokeWidth="2.5" fill="none" opacity="0.7"/>
-    <circle cx="60" cy="60" r="42" stroke="currentColor" strokeWidth="3.5" fill="none"/>
-    <path d="M 32 45 L 32 75 M 32 60 L 48 45 M 32 60 L 48 75" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M 72 75 L 82 45 M 82 45 L 92 75 M 77 60 L 87 60" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
+import KatzavLogoImg from './katzav-logo.svg';
 
 // --- Utility Functions ---
 
@@ -450,8 +440,8 @@ const Header = () => {
             transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.2 }}
             className="relative"
           >
-            <div className="bg-black rounded-full p-2">
-              <KatzavLogo className="h-8 w-8 text-white" />
+            <div className="bg-black rounded-full p-2 flex items-center justify-center">
+              <img src={KatzavLogoImg} alt="Katzav AI" className="h-8 w-8" />
             </div>
           </motion.div>
           <span className="text-xl font-bold text-gray-900 tracking-tight">KATZAV AI</span>
@@ -538,8 +528,8 @@ const Hero = () => (
         transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
         className="flex justify-center mb-8"
       >
-        <div className="bg-black rounded-full p-4 shadow-2xl">
-          <KatzavLogo className="h-16 w-16 md:h-20 md:w-20 text-white" />
+        <div className="bg-black rounded-full p-4 shadow-2xl flex items-center justify-center">
+          <img src={KatzavLogoImg} alt="Katzav AI" className="h-16 w-16 md:h-20 md:w-20" />
         </div>
       </motion.div>
       
@@ -1195,8 +1185,8 @@ const ConsultationBooker = () => {
             className="text-center md:text-right"
           >
             <div className="flex justify-center md:justify-end mb-6">
-              <div className="bg-white rounded-full p-3">
-                <KatzavLogo className="h-12 w-12 text-black" />
+              <div className="bg-white rounded-full p-3 flex items-center justify-center">
+                <img src={KatzavLogoImg} alt="Katzav AI" className="h-12 w-12" />
               </div>
             </div>
             <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
@@ -1525,8 +1515,8 @@ const Footer = () => {
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between md:flex-row">
           <div className="flex items-center gap-3">
-            <div className="bg-white rounded-full p-1.5">
-              <KatzavLogo className="h-6 w-6 text-black" />
+            <div className="bg-white rounded-full p-1.5 flex items-center justify-center">
+              <img src={KatzavLogoImg} alt="Katzav AI" className="h-6 w-6" />
             </div>
             <span className="text-lg font-bold text-white tracking-tight">KATZAV AI</span>
           </div>
