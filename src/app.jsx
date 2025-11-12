@@ -563,18 +563,26 @@ const Hero = () => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="mt-10 flex items-center justify-center gap-x-4"
+        className="mt-10 flex flex-col items-center justify-center gap-4"
       >
-        <Button asChild size="lg">
-          <a href="#consultation">
-            <Send className="h-5 w-5 ml-2" />
-            בואו נדבר על אוטומציה
-          </a>
-        </Button>
-        <Button asChild size="lg" variant="outline">
-          <a href="https://wa.me/972528023630" target="_blank" rel="noopener noreferrer">
-            <MessageCircle className="h-5 w-5 ml-2" />
-            שלחו הודעה בוואטסאפ
+        <div className="flex items-center justify-center gap-x-4 flex-wrap">
+          <Button asChild size="lg">
+            <a href="#consultation">
+              <Send className="h-5 w-5 ml-2" />
+              בואו נדבר על אוטומציה
+            </a>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <a href="https://wa.me/972528023630" target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="h-5 w-5 ml-2" />
+              שלחו הודעה בוואטסאפ
+            </a>
+          </Button>
+        </div>
+        <Button asChild size="lg" variant="ghost" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+          <a href="#ai-agent">
+            <Bot className="h-5 w-5 ml-2" />
+            לסוכן אפיון שלנו לחצו כאן
           </a>
         </Button>
       </motion.div>
@@ -671,71 +679,83 @@ const DiagnosticWidget = () => {
     switch (step) {
       case 1:
         return (
-          <motion.div key={1} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }}>
-            <label htmlFor="problem" className="block text-sm font-medium text-gray-700">שלב 1: מה הבעיה?</label>
-            <p className="text-xs text-gray-500 mb-2">תארו בקצרה את האתגר או התהליך הידני שאתם רוצים לפתור.</p>
+          <motion.div key={1} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <div>
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">שלב 1: מה הבעיה?</h3>
+              <p className="text-lg text-gray-600">תארו בקצרה את האתגר או התהליך הידני שאתם רוצים לפתור.</p>
+            </div>
             <Textarea
               id="problem"
               name="problem"
-              rows={3}
+              rows={5}
               value={formData.problem}
               onChange={handleChange}
               placeholder="למשל: &#10;כל ליד שמגיע מהאתר דורש 5 דקות עבודה ידנית של העתק-הדבק למערכת..."
+              className="text-lg p-4 text-center"
             />
-            <Button onClick={handleNext} className="mt-4 w-full">המשך</Button>
+            <Button onClick={handleNext} className="mt-6 w-full md:w-auto px-12" size="lg">המשך</Button>
           </motion.div>
         );
       case 2:
         return (
-          <motion.div key={2} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }}>
-            <label htmlFor="goal" className="block text-sm font-medium text-gray-700">שלב 2: מה המטרה?</label>
-            <p className="text-xs text-gray-500 mb-2">מה הייתם רוצים שיקרה באופן אידיאלי?</p>
+          <motion.div key={2} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <div>
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">שלב 2: מה המטרה?</h3>
+              <p className="text-lg text-gray-600">מה הייתם רוצים שיקרה באופן אידיאלי?</p>
+            </div>
             <Textarea
               id="goal"
               name="goal"
-              rows={3}
+              rows={5}
               value={formData.goal}
               onChange={handleChange}
               placeholder="למשל: &#10;שהליד ייכנס אוטומטית ל-CRM, יישלח לצוות ב-Slack, והלקוח יקבל SMS..."
+              className="text-lg p-4 text-center"
             />
-            <div className="flex gap-2 mt-4">
-              <Button onClick={handleBack} variant="outline" className="w-1/3">אחורה</Button>
-              <Button onClick={handleNext} className="w-2/3">המשך</Button>
+            <div className="flex gap-3 justify-center mt-6">
+              <Button onClick={handleBack} variant="outline" size="lg" className="px-8">אחורה</Button>
+              <Button onClick={handleNext} size="lg" className="px-8">המשך</Button>
             </div>
           </motion.div>
         );
       case 3:
         return (
-          <motion.div key={3} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }}>
-            <label htmlFor="currentSystem" className="block text-sm font-medium text-gray-700">שלב 3: באילו מערכות אתם משתמשים?</label>
-            <p className="text-xs text-gray-500 mb-2">ציינו שמות של תוכנות עיקריות (אם יש).</p>
+          <motion.div key={3} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <div>
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">שלב 3: באילו מערכות אתם משתמשים?</h3>
+              <p className="text-lg text-gray-600">ציינו שמות של תוכנות עיקריות (אם יש).</p>
+            </div>
             <Textarea
               id="currentSystem"
               name="currentSystem"
-              rows={3}
+              rows={5}
               value={formData.currentSystem}
               onChange={handleChange}
               placeholder="למשל: &#10;אנחנו משתמשים ב-Pipedrive, Google Sheets ו-Wix..."
+              className="text-lg p-4 text-center"
             />
-            <div className="flex gap-2 mt-4">
-              <Button onClick={handleBack} variant="outline" className="w-1/3">אחורה</Button>
-              <Button onClick={handleNext} className="w-2/3">קבלו אפיון</Button>
+            <div className="flex gap-3 justify-center mt-6">
+              <Button onClick={handleBack} variant="outline" size="lg" className="px-8">אחורה</Button>
+              <Button onClick={handleNext} size="lg" className="px-8">קבלו אפיון</Button>
             </div>
           </motion.div>
         );
       case 4:
         return (
-          <motion.div key={4} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }}>
-            <h4 className="text-md font-semibold text-gray-800">שלב אחרון!</h4>
-            <p className="text-sm text-gray-600 mb-3">האפיון הראשוני מוכן. אנא השאירו פרטים וקבלו אותו מיידית.</p>
-            <form onSubmit={handleDiagnoseSubmit} className="space-y-3">
-              <Input id="name" name="name" type="text" placeholder="שם מלא" value={formData.name} onChange={handleChange} required />
-              <Input id="email" name="email" type="email" placeholder="אימייל" value={formData.email} onChange={handleChange} required />
-              <Input id="phone" name="phone" type="tel" placeholder="טלפון" value={formData.phone} onChange={handleChange} required />
-              <div className="flex gap-2 pt-2">
-                <Button onClick={handleBack} variant="outline" className="w-1/3">אחורה</Button>
-                <Button type="submit" className="w-2/3" disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "שלח וקבל אפיון AI"}
+          <motion.div key={4} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <div>
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">שלב אחרון!</h3>
+              <p className="text-lg text-gray-600 mb-2">האפיון הראשוני מוכן.</p>
+              <p className="text-base text-gray-500">אנא השאירו פרטים וקבלו אותו מיידית.</p>
+            </div>
+            <form onSubmit={handleDiagnoseSubmit} className="space-y-4 max-w-md mx-auto">
+              <Input id="name" name="name" type="text" placeholder="שם מלא" value={formData.name} onChange={handleChange} required className="text-lg p-4 text-center" />
+              <Input id="email" name="email" type="email" placeholder="אימייל" value={formData.email} onChange={handleChange} required className="text-lg p-4 text-center" />
+              <Input id="phone" name="phone" type="tel" placeholder="טלפון" value={formData.phone} onChange={handleChange} required className="text-lg p-4 text-center" />
+              <div className="flex gap-3 justify-center pt-2">
+                <Button onClick={handleBack} variant="outline" size="lg" className="px-8">אחורה</Button>
+                <Button type="submit" size="lg" className="px-8" disabled={loading}>
+                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "שלח וקבל אפיון AI"}
                 </Button>
               </div>
             </form>
@@ -743,16 +763,16 @@ const DiagnosticWidget = () => {
         );
       case 5: // Result Step
         return (
-          <motion.div key={5} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <motion.div key={5} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
             {submitted ? (
               // Confirmation message after clicking CTA
-              <div className="text-center space-y-4">
-                <CheckCircle className="h-16 w-16 text-emerald-600 mx-auto" />
-                <h3 className="text-2xl font-bold text-gray-900">תודה רבה!</h3>
-                <p className="text-lg text-gray-600">
+              <div className="space-y-6 py-8">
+                <CheckCircle className="h-20 w-20 text-emerald-600 mx-auto" />
+                <h3 className="text-4xl font-black text-gray-900">תודה רבה!</h3>
+                <p className="text-xl text-gray-600">
                   קיבלנו את הפרטים שלך ואת האפיון הראשוני
                 </p>
-                <p className="text-base text-gray-500">
+                <p className="text-lg text-gray-500">
                   נחזור אליך בהקדם לשיחה על הפתרון המתאים לעסק שלך
                 </p>
                 <div className="pt-4">
@@ -773,7 +793,8 @@ const DiagnosticWidget = () => {
                       setError(null);
                     }}
                     variant="outline"
-                    className="mt-4"
+                    size="lg"
+                    className="px-8"
                   >
                     אפיון חדש
                   </Button>
@@ -782,56 +803,67 @@ const DiagnosticWidget = () => {
             ) : (
               // Show results
               <>
-                <h3 className="text-xl font-bold text-emerald-600 mb-3">האפיון הראשוני שלך מוכן!</h3>
+                <h3 className="text-3xl md:text-4xl font-black text-emerald-600 mb-6">האפיון הראשוני שלך מוכן!</h3>
                 {result ? (
-                  <div className="space-y-4 text-right">
-                    <h4 className="text-lg font-semibold text-gray-900">{result.title}</h4>
+                  <div className="space-y-8 text-center max-w-3xl mx-auto">
+                    <h4 className="text-2xl md:text-3xl font-bold text-gray-900">{result.title}</h4>
                     
                     {/* Value Proposition */}
-                    <div className="bg-emerald-50 border-r-4 border-emerald-500 p-3 rounded">
-                      <h5 className="font-semibold text-emerald-800">הערך המרכזי</h5>
-                      <p className="text-sm text-emerald-700">{result.valueProposition}</p>
+                    <div className="bg-emerald-50 border-2 border-emerald-200 p-6 rounded-xl">
+                      <h5 className="text-xl font-bold text-emerald-800 mb-3">הערך המרכזי</h5>
+                      <p className="text-lg text-emerald-700">{result.valueProposition}</p>
                     </div>
 
                     {/* Value Boxes (Time/Efficiency) */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-gray-100 p-2 rounded">
-                        <h6 className="text-xs font-medium text-gray-500">חיסכון בזמן</h6>
-                        <p className="text-sm font-semibold text-gray-800">{result.timeSaving}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-gray-100 p-6 rounded-xl">
+                        <h6 className="text-base font-semibold text-gray-600 mb-2">חיסכון בזמן</h6>
+                        <p className="text-2xl font-bold text-gray-900">{result.timeSaving}</p>
                       </div>
-                       <div className="bg-gray-100 p-2 rounded">
-                        <h6 className="text-xs font-medium text-gray-500">שיפור ביעילות</h6>
-                        <p className="text-sm font-semibold text-gray-800">{result.efficiencyGain}</p>
+                      <div className="bg-gray-100 p-6 rounded-xl">
+                        <h6 className="text-base font-semibold text-gray-600 mb-2">שיפור ביעילות</h6>
+                        <p className="text-2xl font-bold text-gray-900">{result.efficiencyGain}</p>
                       </div>
                     </div>
 
                     {/* Steps */}
-                    <div>
-                      <h5 className="font-semibold mb-2">שלבי התהליך (כללי):</h5>
-                      <ol className="relative border-r border-gray-200 mr-2 space-y-3">
-                        {result.steps.map((step, index) => (
-                          <li key={index} className="mr-4">
-                            <span className="absolute -right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-emerald-200 ring-4 ring-white"></span>
-                            <h6 className="text-sm font-semibold">{step.name}</h6>
-                            <p className="text-xs text-gray-500">באמצעות: {step.tool}</p>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
+                    {result.steps && result.steps.length > 0 && (
+                      <div className="text-right">
+                        <h5 className="text-xl font-bold mb-6 text-gray-900">שלבי התהליך (כללי):</h5>
+                        <ol className="relative border-r-2 border-emerald-300 mr-6 space-y-6">
+                          {result.steps.map((step, index) => (
+                            <li key={index} className="mr-8">
+                              <span className="absolute -right-3 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 ring-4 ring-white text-white font-bold">
+                                {index + 1}
+                              </span>
+                              <h6 className="text-lg font-bold text-gray-900 mb-1">{step.name}</h6>
+                              <p className="text-base text-gray-600">באמצעות: {step.tool}</p>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
                     
-                    <p className="text-xs text-gray-500 pt-2">זמן פיתוח מוערך: {result.estimatedTime}</p>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-lg text-gray-700">
+                        <span className="font-bold">זמן פיתוח מוערך:</span> {result.estimatedTime}
+                      </p>
+                    </div>
 
                     {/* CTA */}
                     <Button 
                       onClick={() => setSubmitted(true)}
-                      className="w-full mt-4" 
+                      className="w-full md:w-auto px-12 mt-6" 
                       size="lg"
                     >
                       רוצים לדבר על זה? בואו נקבע שיחה
                     </Button>
                   </div>
                 ) : (
-                  <p>טוען תוצאות...</p>
+                  <div className="py-12">
+                    <Loader2 className="h-12 w-12 animate-spin text-emerald-600 mx-auto" />
+                    <p className="text-lg text-gray-600 mt-4">טוען תוצאות...</p>
+                  </div>
                 )}
               </>
             )}
@@ -846,38 +878,40 @@ const DiagnosticWidget = () => {
   const progress = (step - 1) / (totalSteps) * 100;
 
   return (
-    <section id="ai-agent" className="w-full bg-gray-50 py-16 md:py-24" dir="rtl">
-      <div className="container mx-auto max-w-2xl px-4">
-        <Card className="shadow-xl">
-          <CardHeader className="text-center">
+    <section id="ai-agent" className="w-full bg-gradient-to-b from-white to-gray-50 py-20 md:py-32" dir="rtl">
+      <div className="container mx-auto max-w-4xl px-4">
+        <Card className="shadow-2xl border-0">
+          <CardHeader className="text-center pb-8">
             <motion.div
               animate={{ rotate: [0, 10, -10, 10, 0] }}
               transition={{ duration: 1, repeat: Infinity, repeatDelay: 3 }}
-              className="mx-auto w-fit"
+              className="mx-auto w-fit mb-4"
             >
-              <Bot className="h-10 w-10 text-emerald-600" />
+              <div className="bg-emerald-100 rounded-full p-4">
+                <Bot className="h-12 w-12 text-emerald-600" />
+              </div>
             </motion.div>
-            <CardTitle className="text-2xl font-bold">סוכן AI לאפיון חכם</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-3xl md:text-4xl font-black text-gray-900 mb-3">סוכן AI לאפיון חכם</CardTitle>
+            <CardDescription className="text-lg text-gray-600">
               ענו על 3 שאלות קצרות וקבלו אפיון אוטומציה ראשוני מה-AI שלנו
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6 md:px-12 pb-12">
             {/* Progress Bar */}
-            <div className="mb-4">
-              <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="mb-8">
+              <div className="w-full bg-gray-200 rounded-full h-3">
                 <motion.div
-                  className="bg-emerald-600 h-2 rounded-full"
+                  className="bg-emerald-600 h-3 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ ease: "easeInOut" }}
                 />
               </div>
-              <p className="text-xs text-gray-500 text-center mt-1">שלב {step > 4 ? 4 : step} מתוך {totalSteps}</p>
+              <p className="text-base text-gray-600 text-center mt-3 font-medium">שלב {step > 4 ? 4 : step} מתוך {totalSteps}</p>
             </div>
             
             {/* Step Content */}
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden min-h-[400px]">
               <AnimatePresence mode="wait">
                 {renderStepContent()}
               </AnimatePresence>
@@ -888,9 +922,9 @@ const DiagnosticWidget = () => {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }} 
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-2 text-center text-sm text-red-600"
+                className="mt-6 text-center text-base text-red-600 bg-red-50 p-4 rounded-lg"
               >
-                <AlertCircle className="h-4 w-4 inline-block ml-1" />
+                <AlertCircle className="h-5 w-5 inline-block ml-2" />
                 {error}
               </motion.div>
             )}
