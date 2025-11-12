@@ -6,6 +6,7 @@ import {
   Send
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import KatzavLogo from './katzav-logo.svg';
 
 // --- Utility Functions ---
 
@@ -432,15 +433,18 @@ const Header = () => {
     <header className="sticky top-0 z-40 w-full border-b bg-white/90 backdrop-blur-sm" dir="rtl">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2">
+        <a href="#" className="flex items-center gap-3">
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.2 }}
+            className="relative"
           >
-            <Zap className="h-7 w-7 text-emerald-600" />
+            <div className="bg-black rounded-full p-2">
+              <img src={KatzavLogo} alt="Katzav AI" className="h-8 w-8" />
+            </div>
           </motion.div>
-          <span className="text-xl font-bold text-gray-900">Katzav AI</span>
+          <span className="text-xl font-bold text-gray-900 tracking-tight">KATZAV AI</span>
         </a>
 
         {/* Desktop Nav */}
@@ -513,20 +517,54 @@ const Hero = () => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.7, ease: "easeOut" }}
-    className="w-full bg-white py-20 md:py-32"
+    className="w-full bg-gradient-to-b from-gray-50 to-white py-20 md:py-32"
     dir="rtl"
   >
     <div className="container mx-auto max-w-4xl px-4 text-center">
-      <Badge variant="secondary" className="mb-4">
-        אוטומציות ובוטי WhatsApp שמביאים תוצאות — מהר.
-      </Badge>
-      <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-        צ׳אטבוט WhatsApp ואוטומציות שמורידים עומס ומעלים המרות
-      </h1>
-      <p className="mt-6 text-lg leading-8 text-gray-600 md:text-xl">
-        אנחנו בונים תהליכים אוטומטיים ובוטים חכמים שחוסכים לכם זמן יקר, משפרים את שירות הלקוחות ומגדילים את שורת הרווח.
-      </p>
-      <div className="mt-10 flex items-center justify-center gap-x-4">
+      {/* Logo */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+        className="flex justify-center mb-8"
+      >
+        <div className="bg-black rounded-full p-4 shadow-2xl">
+          <img src={KatzavLogo} alt="Katzav AI" className="h-16 w-16 md:h-20 md:w-20" />
+        </div>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <h1 className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 mb-4">
+          KATZAV AI
+        </h1>
+        <Badge variant="secondary" className="mb-6">
+          אוטומציות ובוטי WhatsApp שמביאים תוצאות — מהר.
+        </Badge>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl md:text-5xl mt-6">
+          צ׳אטבוט WhatsApp ואוטומציות שמורידים עומס ומעלים המרות
+        </h2>
+        <p className="mt-6 text-lg leading-8 text-gray-600 md:text-xl">
+          אנחנו בונים תהליכים אוטומטיים ובוטים חכמים שחוסכים לכם זמן יקר, משפרים את שירות הלקוחות ומגדילים את שורת הרווח.
+        </p>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="mt-10 flex items-center justify-center gap-x-4"
+      >
         <Button asChild size="lg">
           <a href="#consultation">
             <Send className="h-5 w-5 ml-2" />
@@ -539,7 +577,7 @@ const Hero = () => (
             שלחו הודעה בוואטסאפ
           </a>
         </Button>
-      </div>
+      </motion.div>
     </div>
   </motion.section>
 );
@@ -1135,7 +1173,7 @@ const ConsultationBooker = () => {
   };
 
   return (
-    <section id="consultation" className="w-full bg-gray-900 py-16 md:py-24" dir="rtl">
+    <section id="consultation" className="w-full bg-black py-16 md:py-24" dir="rtl">
       <div className="container mx-auto max-w-4xl px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
@@ -1146,7 +1184,12 @@ const ConsultationBooker = () => {
             transition={{ duration: 0.6 }}
             className="text-center md:text-right"
           >
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <div className="flex justify-center md:justify-end mb-6">
+              <div className="bg-white rounded-full p-3">
+                <img src={KatzavLogo} alt="Katzav AI" className="h-12 w-12" />
+              </div>
+            </div>
+            <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
               בואו נדבר על האוטומציה הבאה שלכם
             </h2>
             <p className="mt-4 text-lg text-gray-300">
@@ -1155,7 +1198,7 @@ const ConsultationBooker = () => {
             <p className="mt-4 text-gray-400">
               מעדיפים וואטסאפ? אין בעיה.
             </p>
-            <Button asChild size="lg" variant="outline" className="mt-4 bg-transparent text-white border-white hover:bg-white hover:text-gray-900">
+            <Button asChild size="lg" variant="outline" className="mt-4 bg-transparent text-white border-2 border-white hover:bg-white hover:text-black">
               <a href="https://wa.me/972528023630" target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="h-5 w-5 ml-2" />
                 שלחו הודעה בוואטסאפ
@@ -1468,20 +1511,22 @@ const Contact = () => {
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-gray-900 text-gray-400 py-12" dir="rtl">
+    <footer className="w-full bg-black text-gray-400 py-12" dir="rtl">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between md:flex-row">
-          <div className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-emerald-500" />
-            <span className="text-lg font-semibold text-white">Katzav AI</span>
+          <div className="flex items-center gap-3">
+            <div className="bg-white rounded-full p-1.5">
+              <img src={KatzavLogo} alt="Katzav AI" className="h-6 w-6" />
+            </div>
+            <span className="text-lg font-bold text-white tracking-tight">KATZAV AI</span>
           </div>
           <div className="mt-4 flex gap-x-6 md:mt-0">
-            <a href="#services" className="text-sm hover:text-white">שירותים</a>
-            <a href="#faq" className="text-sm hover:text-white">שאלות נפוצות</a>
-            <a href="#contact" className="text-sm hover:text-white">יצירת קשר</a>
+            <a href="#services" className="text-sm hover:text-white transition-colors">שירותים</a>
+            <a href="#faq" className="text-sm hover:text-white transition-colors">שאלות נפוצות</a>
+            <a href="#contact" className="text-sm hover:text-white transition-colors">יצירת קשר</a>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-700 pt-8 text-center text-sm md:text-left">
+        <div className="mt-8 border-t border-gray-800 pt-8 text-center text-sm md:text-left">
           <p>&copy; {new Date().getFullYear()} Katzav AI. כל הזכויות שמורות.</p>
         </div>
       </div>
