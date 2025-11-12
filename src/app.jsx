@@ -95,6 +95,9 @@ async function callGeminiAPI(formData) {
   // כל הלוגיקה של AI רצה עכשיו בשרת דרך n8n
   const n8nWebhookUrl = 'https://n8n.srv942917.hstgr.cloud/webhook/diagnostic-agent';
   
+  // Debug: הצג מה נשלח
+  console.log('📤 שולח ל-n8n את הנתונים הבאים:', formData);
+  
   try {
     const response = await fetch(n8nWebhookUrl, {
       method: 'POST',
