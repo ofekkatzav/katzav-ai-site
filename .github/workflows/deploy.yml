@@ -1,0 +1,41 @@
+name: Build and Deploy to VPS
+
+on:
+  # הפעל את התהליך רק בדחיפה (push) לענף הראשי (main)
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. הורד את הקוד מה-Repo
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. התקן Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    # 3. התקן תלויות ובנה את הפרויקט
+    - name: Install and Build
+      run: |
+        npm ci
+        npm run build
+
+    # 4. העלה את תיקיית ה-build לשרת ה-VPS
+    - name: Deploy to VPS
+      uses: easingthemes/ssh-deploy@v2.2.11
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+        ARGS: "-rltgoDzvO --delete"
+        SOURCE: "build/"
+        REMOTE_HOST: "YOUR_SERVER_IP"
+        REMOTE_USER: "root"
+        TARGET: "/var/www/katzav-ai"
+
