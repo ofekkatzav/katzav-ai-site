@@ -113,6 +113,11 @@ async function callGeminiAPI(formData) {
     
     const data = await response.json();
     
+    // Check for invalid input error
+    if (!data.success && data.error === 'INVALID_INPUT') {
+      throw new Error(data.message || 'הפרטים שהוזנו אינם מספיקים ליצירת אפיון מדויק');
+    }
+    
     if (!data.success) {
       throw new Error(data.message || 'אירעה שגיאה בעיבוד הבקשה');
     }
@@ -609,7 +614,13 @@ const DiagnosticWidget = () => {
       
     } catch (err) {
       console.error("Error in handleDiagnoseSubmit:", err);
-      setError(err.message || "אירעה שגיאה. אנא נסו שוב.");
+      
+      // Special handling for invalid input
+      if (err.message.includes('הפרטים שהוזנו אינם מספיקים')) {
+        setError("הפרטים שהוזנו אינם מספיקים ליצירת אפיון מדויק. אנא נסו שוב עם תיאור מפורט יותר של הבעיה והמטרה.");
+      } else {
+        setError(err.message || "אירעה שגיאה. אנא נסו שוב.");
+      }
     } finally {
       setLoading(false);
     }
